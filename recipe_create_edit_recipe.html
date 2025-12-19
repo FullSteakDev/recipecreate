@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Squibbe - Recipe Editor Fixed</title>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'brand-teal': '#22C4C4',
+                        'brand-dark-teal': '#1A9E9E',
+                        'bg-app': '#F0F4F8',
+                        'text-dark': '#2D3748',
+                        'text-gray': '#718096',
+                        'bg-soft': '#F8FAFC',
+                        'macro-pro': '#3B82F6',
+                        'macro-carb': '#F59E0B',
+                        'macro-fat': '#EF4444',
+                    },
+                    fontFamily: {
+                        sans: ['Quicksand', 'Inter', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        'soft': '0px 10px 40px rgba(0, 0, 0, 0.03)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none;  scrollbar-width: none; }
+        .tap-effect { transition: transform 0.1s ease; }
+        .tap-effect:active { transform: scale(0.98); }
+        
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #22C4C4;
+            box-shadow: 0 0 0 3px rgba(34, 196, 196, 0.1);
+        }
+
+        .toggle-checkbox:checked {
+            right: 0;
+            border-color: #22C4C4;
+        }
+        .toggle-checkbox:checked + .toggle-label {
+            background-color: #22C4C4;
+        }
+    </style>
+</head>
+<body class="bg-bg-app min-h-screen flex items-center justify-center py-10 font-sans">
+
+    <div class="relative mx-auto border-gray-900 bg-gray-900 border-[14px] rounded-[3rem] h-[852px] w-[393px] shadow-2xl overflow-hidden ring-4 ring-gray-300">
+        <div class="absolute top-0 left-1/2 transform -translate-x-1/2 h-[35px] w-[120px] bg-black rounded-b-[18px] z-50"></div>
+        
+        <div class="h-full w-full bg-white overflow-y-auto no-scrollbar relative flex flex-col">
+            
+            <div class="px-5 pt-14 pb-4 grid grid-cols-3 items-center bg-white z-20 sticky top-0 border-b border-gray-50 shadow-sm">
+                
+                <button class="justify-self-start text-sm font-bold text-gray-400 hover:text-text-dark tap-effect py-2 pl-1">
+                    Mégse
+                </button>
+                
+                <h1 class="justify-self-center text-base font-bold text-text-dark text-center w-full px-2">
+                    Szerkesztés
+                </h1>
+                
+                <button class="justify-self-end text-sm font-bold text-brand-teal hover:text-brand-dark-teal tap-effect py-1.5 px-3 bg-brand-teal/10 rounded-lg">
+                    Mentés
+                </button>
+            </div>
+
+            <div class="flex-1 px-6 pt-6 pb-12 flex flex-col gap-8">
+
+                <div class="flex flex-col gap-5">
+                    
+                    <div>
+                        <label class="block text-xs font-bold text-gray-400 uppercase tracking-wide mb-3 ml-1">Válassz ikont</label>
+                        <div class="flex gap-4 overflow-x-auto no-scrollbar pb-2">
+                            <div class="flex flex-col items-center gap-2 shrink-0 cursor-pointer tap-effect">
+                                <div class="w-16 h-16 rounded-[20px] bg-brand-teal text-white flex items-center justify-center shadow-lg shadow-brand-teal/30 border-2 border-brand-teal">
+                                    <span class="material-icons-round text-3xl">restaurant_menu</span>
+                                </div>
+                                <span class="text-[10px] font-bold text-brand-teal">Főétel</span>
+                            </div>
+
+                            <div class="flex flex-col items-center gap-2 shrink-0 cursor-pointer tap-effect opacity-60 hover:opacity-100 transition-opacity">
+                                <div class="w-16 h-16 rounded-[20px] bg-gray-50 text-gray-400 flex items-center justify-center border-2 border-transparent">
+                                    <span class="material-icons-round text-3xl">lunch_dining</span>
+                                </div>
+                                <span class="text-[10px] font-bold text-gray-400">Ebéd</span>
+                            </div>
+
+                            <div class="flex flex-col items-center gap-2 shrink-0 cursor-pointer tap-effect opacity-60 hover:opacity-100 transition-opacity">
+                                <div class="w-16 h-16 rounded-[20px] bg-gray-50 text-gray-400 flex items-center justify-center border-2 border-transparent">
+                                    <span class="material-icons-round text-3xl">blender</span>
+                                </div>
+                                <span class="text-[10px] font-bold text-gray-400">Ital</span>
+                            </div>
+
+                            <div class="flex flex-col items-center gap-2 shrink-0 cursor-pointer tap-effect opacity-60 hover:opacity-100 transition-opacity">
+                                <div class="w-16 h-16 rounded-[20px] bg-gray-50 text-gray-400 flex items-center justify-center border-2 border-transparent">
+                                    <span class="material-icons-round text-3xl">bakery_dining</span>
+                                </div>
+                                <span class="text-[10px] font-bold text-gray-400">Pékáru</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-gray-400 uppercase tracking-wide mb-1.5 ml-1">Recept neve</label>
+                        <input type="text" value="Currys csirke rizzsel" 
+                               class="w-full bg-gray-50 text-text-dark text-lg font-bold placeholder-gray-300 rounded-[16px] px-4 py-3.5 border border-transparent transition-all focus:bg-white">
+                    </div>
+                </div>
+
+                <div class="flex gap-3">
+                    <div class="flex-1">
+                        <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wide mb-1.5 ml-1">Idő</label>
+                        <div class="relative">
+                            <span class="material-icons-round absolute left-3 top-3 text-gray-400 text-sm">schedule</span>
+                            <select class="w-full bg-gray-50 text-text-dark text-sm font-bold rounded-[16px] pl-8 pr-2 py-3 border border-transparent appearance-none">
+                                <option>15 p</option>
+                                <option selected>30 p</option>
+                                <option>45 p</option>
+                            </select>
+                            <span class="material-icons-round absolute right-2 top-3 text-gray-400 text-sm pointer-events-none">expand_more</span>
+                        </div>
+                    </div>
+                    <div class="flex-1">
+                        <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wide mb-1.5 ml-1">Nehézség</label>
+                        <div class="relative">
+                            <span class="material-icons-round absolute left-3 top-3 text-gray-400 text-sm">signal_cellular_alt</span>
+                            <select class="w-full bg-gray-50 text-text-dark text-sm font-bold rounded-[16px] pl-8 pr-2 py-3 border border-transparent appearance-none">
+                                <option selected>Könnyű</option>
+                                <option>Közepes</option>
+                            </select>
+                            <span class="material-icons-round absolute right-2 top-3 text-gray-400 text-sm pointer-events-none">expand_more</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white border border-gray-100 shadow-sm rounded-[20px] p-4 flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                        <span class="material-icons-round text-brand-teal bg-brand-teal/10 p-1.5 rounded-lg">pie_chart</span>
+                        <span class="text-sm font-bold text-text-dark">Adagok száma</span>
+                    </div>
+                    <div class="flex items-center bg-gray-50 rounded-xl p-1">
+                        <button class="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-text-dark bg-white rounded-lg shadow-sm tap-effect">
+                            <span class="material-icons-round text-sm">remove</span>
+                        </button>
+                        <span class="w-10 text-center font-bold text-text-dark">4</span>
+                        <button class="w-8 h-8 flex items-center justify-center text-white bg-brand-teal rounded-lg shadow-sm tap-effect">
+                            <span class="material-icons-round text-sm">add</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="flex justify-between items-end mb-3">
+                        <label class="text-sm font-bold text-gray-400 uppercase tracking-wide ml-1">Összetevők</label>
+                    </div>
+                    
+                    <div class="flex flex-col gap-3">
+                        
+                        <div class="flex items-start gap-3 p-3 pl-4 rounded-[20px] border border-gray-100 bg-white shadow-sm">
+                            <div class="flex-1">
+                                <div class="text-sm font-bold text-text-dark leading-tight">Csirkemell filé</div>
+                                <div class="text-xs font-semibold text-gray-400 mt-1">600g</div>
+                            </div>
+                            <div class="flex gap-3">
+                                <div class="flex flex-col items-end border-r border-gray-100 pr-3">
+                                    <span class="text-sm font-black text-brand-teal mb-1">660 kcal</span>
+                                    <div class="flex items-center gap-2 text-[10px]">
+                                        <span class="font-black text-macro-pro">F <span class="font-bold text-text-dark">140</span></span>
+                                        <span class="font-black text-macro-carb">SZ <span class="font-bold text-text-dark">2</span></span>
+                                        <span class="font-black text-macro-fat">ZS <span class="font-bold text-text-dark">15</span></span>
+                                    </div>
+                                </div>
+                                <button class="w-8 h-8 flex items-center justify-center bg-red-50 rounded-full text-red-500 tap-effect self-center shadow-sm">
+                                    <span class="material-icons-round text-xl">remove_circle_outline</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-3 p-3 pl-4 rounded-[20px] border border-gray-100 bg-white shadow-sm">
+                            <div class="flex-1">
+                                <div class="text-sm font-bold text-text-dark leading-tight">Basmati rizs</div>
+                                <div class="text-xs font-semibold text-gray-400 mt-1">300g</div>
+                            </div>
+                            <div class="flex gap-3">
+                                <div class="flex flex-col items-end border-r border-gray-100 pr-3">
+                                    <span class="text-sm font-black text-brand-teal mb-1">1050 kcal</span>
+                                    <div class="flex items-center gap-2 text-[10px]">
+                                        <span class="font-black text-macro-pro">F <span class="font-bold text-text-dark">25</span></span>
+                                        <span class="font-black text-macro-carb">SZ <span class="font-bold text-text-dark">230</span></span>
+                                        <span class="font-black text-macro-fat">ZS <span class="font-bold text-text-dark">2</span></span>
+                                    </div>
+                                </div>
+                                <button class="w-8 h-8 flex items-center justify-center bg-red-50 rounded-full text-red-500 tap-effect self-center shadow-sm">
+                                    <span class="material-icons-round text-xl">remove_circle_outline</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <button class="w-full py-4 mt-2 bg-brand-teal/10 rounded-[20px] text-brand-teal font-bold text-sm flex items-center justify-center gap-2 border-2 border-brand-teal hover:bg-brand-teal hover:text-white transition-all tap-effect shadow-sm">
+                            <div class="w-6 h-6 rounded-full border-2 border-current flex items-center justify-center">
+                                <span class="material-icons-round text-sm font-bold">add</span>
+                            </div>
+                            <span>Összetevő hozzáadása</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-bold text-gray-400 uppercase tracking-wide mb-3 ml-1">Elkészítés</label>
+                    
+                    <div class="flex flex-col gap-4">
+                        <div class="flex gap-3">
+                            <div class="w-6 h-6 rounded-full bg-brand-teal text-white flex items-center justify-center text-xs font-bold shrink-0 mt-2">1</div>
+                            <textarea rows="2" class="flex-1 bg-gray-50 rounded-[16px] p-3 text-sm font-medium text-text-dark resize-none placeholder-gray-400 leading-relaxed" placeholder="Írd le a lépést...">A csirkemellet kockázd fel, sózd és borsozd meg.</textarea>
+                        </div>
+                        
+                        <div class="flex gap-3">
+                            <div class="w-6 h-6 rounded-full bg-gray-200 text-gray-500 flex items-center justify-center text-xs font-bold shrink-0 mt-2">2</div>
+                            <textarea rows="2" class="flex-1 bg-gray-50 rounded-[16px] p-3 text-sm font-medium text-text-dark resize-none placeholder-gray-400" placeholder="Következő lépés..."></textarea>
+                        </div>
+
+                        <button class="ml-9 text-xs font-bold text-brand-teal flex items-center gap-1 tap-effect">
+                            <span class="material-icons-round text-sm">add</span>
+                            Új lépés
+                        </button>
+                    </div>
+                </div>
+
+                <div class="bg-white border border-gray-100 rounded-[24px] p-5 flex items-center justify-between shadow-soft">
+                    <div class="flex flex-col gap-1">
+                        <div class="flex items-center gap-2">
+                            <span class="material-icons-round text-brand-teal">public</span>
+                            <span class="text-sm font-bold text-text-dark">Recept megosztása</span>
+                        </div>
+                        <span class="text-xs text-gray-400 font-medium">Mások is láthatják és menthetik ezt a receptet.</span>
+                    </div>
+
+                    <div class="relative inline-block w-12 h-6 align-middle select-none transition duration-200 ease-in">
+                        <input type="checkbox" name="toggle" id="toggle" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 border-gray-200 appearance-none cursor-pointer transition-all duration-300"/>
+                        <label for="toggle" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-200 cursor-pointer transition-colors duration-300"></label>
+                    </div>
+                </div>
+
+                <div class="bg-gradient-to-br from-bg-soft to-white rounded-[24px] p-5 border border-gray-100 shadow-soft">
+                    <div class="flex items-center gap-2 mb-4">
+                        <span class="material-icons-round text-brand-teal">insights</span>
+                        <span class="text-sm font-bold text-text-dark">Várható tápérték / adag</span>
+                    </div>
+
+                    <div class="flex items-center justify-between">
+                         <div class="flex flex-col pr-6 border-r border-gray-200">
+                            <span class="text-2xl font-black text-brand-teal">427</span>
+                            <span class="text-[10px] font-bold text-gray-400 uppercase">kcal</span>
+                        </div>
+
+                        <div class="flex items-center gap-4 flex-1 justify-end pl-2">
+                            <div class="flex flex-col items-center">
+                                <span class="text-[10px] font-black text-macro-pro uppercase mb-0.5">F</span>
+                                <span class="text-sm font-bold text-text-dark">41g</span>
+                            </div>
+                            <div class="flex flex-col items-center">
+                                <span class="text-[10px] font-black text-macro-carb uppercase mb-0.5">SZ</span>
+                                <span class="text-sm font-bold text-text-dark">58g</span>
+                            </div>
+                            <div class="flex flex-col items-center">
+                                <span class="text-[10px] font-black text-macro-fat uppercase mb-0.5">ZS</span>
+                                <span class="text-sm font-bold text-text-dark">4g</span>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-[10px] text-gray-400 mt-3 text-center font-medium">
+                        Automatikusan számolva az összetevők alapján.
+                    </p>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="absolute bottom-2 left-1/2 transform -translate-x-1/2 w-[130px] h-[5px] bg-gray-900 rounded-full z-[60] opacity-10"></div>
+    </div>
+
+</body>
+</html>
